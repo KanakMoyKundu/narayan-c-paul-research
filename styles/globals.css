@@ -1,0 +1,151 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: 246 244 239;
+    --surface: 255 255 255;
+    --elevated: 239 235 228;
+    --ink: 16 20 24;
+    --muted: 92 100 112;
+    --line: 214 209 200;
+    --accent: 14 75 110;
+    --ember: 161 92 43;
+    --grain: 0.045;
+  }
+
+  .dark {
+    --bg: 11 13 15;
+    --surface: 18 21 23;
+    --elevated: 26 30 33;
+    --ink: 236 234 230;
+    --muted: 140 148 156;
+    --line: 35 40 44;
+    --accent: 111 179 217;
+    --ember: 217 160 91;
+    --grain: 0.06;
+  }
+
+  * { border-color: rgb(var(--line)); }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    font-kerning: normal;
+    font-variant-ligatures: common-ligatures contextual;
+  }
+
+  body {
+    background-color: rgb(var(--bg));
+    color: rgb(var(--ink));
+    font-feature-settings: "cv11", "ss01", "calt";
+    overflow-x: hidden;
+    transition: background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      color 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 250;
+    pointer-events: none;
+    opacity: var(--grain);
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.5'/></svg>");
+    mix-blend-mode: overlay;
+  }
+  .dark body::after { mix-blend-mode: soft-light; }
+
+  ::selection { background: rgb(var(--accent) / 0.22); }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--accent));
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  @media (pointer: fine) {
+    html.ncp-cursor,
+    html.ncp-cursor body,
+    html.ncp-cursor a,
+    html.ncp-cursor button,
+    html.ncp-cursor [role="button"],
+    html.ncp-cursor input[type="range"] { cursor: none; }
+  }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: rgb(var(--bg)); }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--line));
+    border-radius: 99px;
+    border: 3px solid rgb(var(--bg));
+  }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--muted) / 0.6); }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+  }
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 2px;
+    background: rgb(var(--line));
+    border-radius: 99px;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    margin-top: -6px;
+    height: 14px;
+    width: 14px;
+    border-radius: 99px;
+    background: rgb(var(--accent));
+    border: 2px solid rgb(var(--bg));
+    box-shadow: 0 0 0 1px rgb(var(--accent) / 0.4);
+    transition: transform 0.2s ease;
+  }
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+}
+
+@layer components {
+  .rule { @apply h-px w-full bg-line; }
+  .eyebrow {
+    @apply font-mono text-[10px] uppercase tracking-[0.3em] text-muted;
+  }
+  .hairline-grid {
+    background-image: linear-gradient(to right, rgb(var(--line) / 0.5) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(var(--line) / 0.5) 1px, transparent 1px);
+    background-size: 88px 88px;
+  }
+  .mask-span {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    line-height: inherit;
+  }
+}
+
+@keyframes ncp-reveal {
+  from { clip-path: circle(0% at var(--vt-x, 50%) var(--vt-y, 50%)); }
+  to { clip-path: circle(150% at var(--vt-x, 50%) var(--vt-y, 50%)); }
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) { z-index: 1; }
+::view-transition-new(root) {
+  z-index: 2;
+  animation: ncp-reveal 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  body::after { display: none; }
+}
