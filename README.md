@@ -58,8 +58,60 @@ Everything displayed is derived from `data/researcher.ts` and `lib/derive.ts`.
 
 ## 6. Deploy
 
-Push to a Git repository and import at https://vercel.com/new.
-Or run `npm run build` and `npm run start` on any Node host.
+The site is configured for **GitHub Pages** as a fully static export
+(`output: "export"` in `next.config.mjs`). `npm run build` writes the static
+website to `out/`.
+
+### Automatic deployment
+
+`.github/workflows/deploy.yml` deploys on every push to the default branch
+(`master`), and can also be started manually from the **Actions** tab
+(**Deploy to GitHub Pages** -> **Run workflow**).
+
+The workflow:
+
+1. Installs Node.js 20 and runs `npm ci` using `package-lock.json`.
+2. Runs `npm run build`, exporting the site to `out/`.
+3. Adds `.nojekyll` so GitHub Pages serves the `_next/` folder.
+4. Uploads `out/` with `actions/upload-pages-artifact`.
+5. Deploys with `actions/deploy-pages` to the `github-pages` environment.
+
+The base path is detected automatically from the repository name. Project
+repositories are served under `/<repository-name>/`; `USERNAME.github.io`
+repositories use an empty base path. To use a custom domain, set the repository
+variable `NEXT_PUBLIC_BASE_PATH` to an empty value (or set it explicitly to any
+other required path). Local `npm run dev` and `npm run build` use an empty base
+path unless `NEXT_PUBLIC_BASE_PATH` is set.
+
+### One-time repository setup
+
+In **Settings -> Pages**, set **Source** to **GitHub Actions**. The first push
+to the default branch then publishes the site.
+
+### Published website
+
+- Project repository: `https://USERNAME.github.io/REPOSITORY/`
+- User/organization repository: `https://USERNAME.github.io/`
+- Deployment status and history: **Actions** tab -> **Deploy to GitHub Pages**
+
+### Updating the website
+
+Edit the site, then commit and push to the default branch:
+
+    git add .
+    git commit -m "Describe the change"
+    git push
+
+The workflow rebuilds and redeploys automatically. No manual build or upload
+is required.
+
+### Local production preview
+
+    npm run build
+    npm run start
+
+Vercel remains supported as an alternative host (`output: "export"` works
+there too), but GitHub Pages is the configured deployment target.
 
 ---
 

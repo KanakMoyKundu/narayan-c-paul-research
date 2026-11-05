@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import { profile } from "@/data/researcher";
+import { basePath } from "@/lib/basePath";
 
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 const display = Instrument_Serif({
@@ -36,7 +37,7 @@ export const metadata: Metadata = {
     type: "profile",
   },
   robots: { index: true, follow: true },
-  icons: { icon: "/favicon.svg" },
+  icons: { icon: `${basePath}/favicon.svg` },
 };
 
 const themeScript = `
